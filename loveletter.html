@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Love Letter For You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+        .flower {
+            position: absolute;
+            font-size: 2.5rem;
+            pointer-events: none;
+            animation: float 5s linear forwards;
+        }
+        .letter-container {
+            display: none;
+        }
+        body {
+            background-color: #808000; /* Olive Green */
+            overflow-x: hidden; /* Prevent horizontal scroll from cupids */
+        }
+        .title-font {
+            font-family: 'Dancing Script', cursive;
+        }
+        .text-font {
+            font-family: 'Quicksand', sans-serif;
+        }
+        .cupid {
+            position: absolute;
+            font-size: 3rem;
+            z-index: 5; /* Behind the letter but in front of flowers */
+            opacity: 0.8;
+        }
+        .cupid-left {
+            bottom: -50px;
+            left: -50px;
+            transform: rotate(15deg);
+        }
+        .cupid-right {
+            top: -50px;
+            right: -50px;
+            transform: rotate(-15deg);
+        }
+        .arrow {
+            position: absolute;
+            height: 2px;
+            background-color: #333;
+            transform-origin: left center;
+            z-index: 4;
+        }
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -5px;
+            border-left: 10px solid #333;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden relative">
+    <!-- Flowers will pop up first -->
+    <div id="flowersContainer" class="fixed inset-0"></div>
+
+    <!-- Cupids -->
+    <div class="cupid cupid-left" id="cupidLeft">💘</div>
+    <div class="cupid cupid-right" id="cupidRight">💘</div>
+
+    <!-- Open Letter Button -->
+    <button id="openLetterBtn" class="text-font z-10 bg-[#FFFFE0] hover:bg-[#F8F8C8] text-[#404000] font-bold px-12 py-6 rounded-full text-2xl shadow-2xl transition-all">
+        💌 Open My Love Letter
+    </button>
+
+    <!-- Love Letter Content -->
+    <div id="loveLetter" class="text-font letter-container z-10 max-w-2xl w-full">
+        
+        <!-- 📸 Image Display Box -->
+        <div class="bg-[#FFFFE0]/95 backdrop-blur-sm p-6 rounded-3xl shadow-2xl mb-8 text-center relative">
+            <h3 class="title-font text-2xl font-bold text-[#808000] mb-4">For you 💖</h3>
+            <img 
+                src="/monthsarryjune3/received_1680039176342968.jpeg" 
+                alt="My picture for you" 
+                class="mx-auto rounded-xl shadow-lg max-w-full h-auto max-h-[400px] object-cover border-4 border-[#808000]/20"
+                id="mainImage"
+            >
+            <p class="text-[#404000] mt-3 font-medium">This is me, always yours ❤️</p>
+        </div>
+
+        <!-- Message Box -->
+        <div class="bg-[#FFFFE0]/95 backdrop-blur-sm p-10 rounded-3xl shadow-2xl">
+            <h2 class="title-font text-4xl font-bold text-center text-[#808000] mb-8">Happy 5th Monthsary Babi! ❤️</h2>
+            
+            <p class="text-lg leading-relaxed text-[#333300] whitespace-pre-line font-medium">
+hi babi happy 5th monthsarry, i always wish that no matter what happened we don't give up on each other at lalong lalo na you're going to start your journey and im happy for you and supporting you because Iloveyou so much, i want to ease your overthinks about my past but i know hindi mo maiwasan pero babi this journey or life im building now is ikaw yung babaeng gusto ko kasama ko sa mga laban o problema na kakaharapin, you're more than enough babi hayaan na naten sila basta tayong dalawa minamahal naten ang isat isa faithfully and loyal to each other, all of this i want to with you until we get both what we want Iloveyou so much babi 🌹
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        const flowers = ["🌹", "🌷"];
+        const flowersContainer = document.getElementById('flowersContainer');
+        const openLetterBtn = document.getElementById('openLetterBtn');
+        const loveLetter = document.getElementById('loveLetter');
+        const cupidLeft = document.getElementById('cupidLeft');
+        const cupidRight = document.getElementById('cupidRight');
+        const mainImage = document.getElementById('mainImage');
+
+        // Keep spawning roses & tulips
+        function createFlower() {
+            const flower = document.createElement('div');
+            flower.classList.add('flower');
+            flower.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+            flower.style.left = Math.random() * 100 + "%";
+            flower.style.animationDuration = (3 + Math.random() * 3) + "s";
+            flowersContainer.appendChild(flower);
+            
+            // Remove after animation
+            setTimeout(() => flower.remove(), 5000);
+        }
+
+        // Create flowers every 300ms
+        const flowerInterval = setInterval(createFlower, 300);
+
+        // Function to create an arrow from a cupid to the image
+        function shootArrow(cupid, image) {
+            const arrow = document.createElement('div');
+            arrow.classList.add('arrow');
+            
+            // Get positions
+            const cupidRect = cupid.getBoundingClientRect();
+            const imageRect = image.getBoundingClientRect();
+            
+            // Calculate arrow length and angle
+            const dx = imageRect.left - cupidRect.right;
+            const dy = imageRect.top - cupidRect.top;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            
+            // Set arrow properties
+            arrow.style.width = `${length}px`;
+            arrow.style.left = `${cupidRect.right}px`;
+            arrow.style.top = `${cupidRect.top + cupidRect.height/2}px`;
+            arrow.style.transform = `rotate(${angle}deg)`;
+            
+            // Add arrow to body
+            document.body.appendChild(arrow);
+            
+            // Animate the arrow shooting
+            setTimeout(() => {
+                arrow.style.width = '0px';
+                setTimeout(() => {
+                    document.body.removeChild(arrow);
+                }, 500);
+            }, 1000);
+        }
+
+        // Open letter when clicked
+        openLetterBtn.addEventListener('click', () => {
+            clearInterval(flowerInterval); // Stop flowers
+            openLetterBtn.style.display = 'none';
+            loveLetter.style.display = 'block';
+            
+            // Make cupids visible and shoot arrows
+            cupidLeft.style.opacity = '0.8';
+            cupidRight.style.opacity = '0.8';
+            
+            // Shoot arrows after a short delay
+            setTimeout(() => {
+                shootArrow(cupidLeft, mainImage);
+                shootArrow(cupidRight, mainImage);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
